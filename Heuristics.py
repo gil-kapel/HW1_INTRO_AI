@@ -6,7 +6,12 @@ from GraphSearch import NodesCollection
 
 def tail_manhattan_heuristic(state: MazeState):
     # TODO (EX 7.2), implement heuristic, delete exception
-    raise NotImplemented
+    forward_cost = state.maze_problem.forward_cost
+    tail = state.tail
+    goal_tail = state.maze_problem.tail_goal
+    # |x0-x1|+|y0-y1|
+    manhattan = np.abs(tail[0]-goal_tail[0])+np.abs(tail[1]-goal_tail[1])
+    return manhattan*forward_cost
 
 
 def center_manhattan_heuristic(state: MazeState):
