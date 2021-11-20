@@ -104,8 +104,10 @@ class BestFirstSearchRobot(Robot):
                     return GraphSearchSolution(next_node, solve_time=curr_time() - start_time,
                                                n_node_expanded=n_node_expanded, init_heuristic_time=init_heuristic_time)
             ############################################################################################################
-            # TODO (EX. 5.1): complete code here, delete exception
-            raise NotImplemented
+            for s in maze_problem.expand_state(next_node):
+                if not (s in self.open or s in self.close):
+                    new_node = Node(s, next_node, self._calc_node_priority(s))
+                    self.open.add(new_node, self._calc_node_priority(new_node))
 
             ############################################################################################################
 
@@ -124,8 +126,8 @@ class UniformCostSearchRobot(BestFirstSearchRobot):
         self.name = "uniform cost search robot"
 
     def _calc_node_priority(self, node):
-        # TODO (Ex. 5.2): complete code here (just return the g value), delete exception
-        raise NotImplemented
+        return node.g_value
+
 
 class WAStartRobot(BestFirstSearchRobot):
     def __init__(self, heuristic, w=0.5, **h_params):
