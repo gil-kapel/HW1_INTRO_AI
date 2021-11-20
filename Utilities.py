@@ -15,7 +15,7 @@ def test_robot(robot: type, maps_indices, **robot_params):
     return solutions
 
 
-def solve_and_display(robot: type, maze_index, blit=True, **robot_params):
+def solve_and_display(robot: type, maze_index, blit=False, **robot_params):
     assert isinstance(robot, type)
     maze_file = f"maze_{maze_index}"
     maze_problem = create_problem(maze_file)
