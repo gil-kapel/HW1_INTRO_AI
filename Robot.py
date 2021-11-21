@@ -46,9 +46,14 @@ class BreadthFirstSearchRobot(Robot):
 
             self.close.add(next_node)
             ############################################################################################################
-            # TODO (EX. 4.1): complete code here, delete exception
-            raise NotImplemented
-
+            n_node_expanded += 1
+            for state, cost in MazeProblem.expand_state(maze, next_node.state):
+                if not ((state in self.queue) or (state in self.close)):
+                    new_node = Node(state, next_node, next_node.g_value+cost)
+                    if MazeProblem.is_goal(maze, state):
+                        return GraphSearchSolution(final_node=new_node, solve_time=curr_time() - start_time,
+                                                   n_node_expanded=n_node_expanded)
+                    self.queue.add(new_node)
             ############################################################################################################
         # If we are here, then we didn't find a solution during the search
         assert no_solution_found
@@ -104,10 +109,20 @@ class BestFirstSearchRobot(Robot):
                     return GraphSearchSolution(next_node, solve_time=curr_time() - start_time,
                                                n_node_expanded=n_node_expanded, init_heuristic_time=init_heuristic_time)
             ############################################################################################################
-            for s in maze_problem.expand_state(next_node):
-                if not (s in self.open or s in self.close):
-                    new_node = Node(s, next_node, self._calc_node_priority(s))
-                    self.open.add(new_node, self._calc_node_priority(new_node))
+            n_node_expanded += 1
+            for state, cost in MazeProblem.expand_state(maze_problem, next_node.state):
+                if state not in self.close:
+                    new_cost = next_node.g_value + cost
+                    if self.open.__contains__(state):
+                        old_node = self.open.get_node(state)
+                        if old_node.g_value > new_cost:
+                            old_node.g_value = new_cost
+                            old_node.parent = next_node
+                            self.open.remove_node(old_node)
+                            self.open.add(old_node, self._calc_node_priority(old_node))
+                    else:
+                        new_node = Node(state, next_node, new_cost)
+                        self.open.add(new_node, self._calc_node_priority(new_node))
 
             ############################################################################################################
 
