@@ -28,7 +28,7 @@ class MazeState:
 
 class MazeProblem:
     def __init__(self, maze_map: np.ndarray, initial_head: np.ndarray, initial_tail: np.ndarray, head_goal: np.ndarray,
-                 tail_goal: np.ndarray, forward_cost=1, turn_cost=5):
+                 tail_goal: np.ndarray, forward_cost=1, turn_cost=100):
         assert all([isinstance(x, np.ndarray) for x in [maze_map, initial_head, initial_tail, head_goal, tail_goal]])
 
         self.tail_goal = tail_goal
@@ -135,7 +135,7 @@ class MazeProblem:
     def is_goal(self, state: MazeState):
         return np.all(state.head == self.head_goal) and np.all(state.tail == self.tail_goal)
 
-def create_problem(maze_name, forward_cost=1, turn_cost=5):
+def create_problem(maze_name, forward_cost=1, turn_cost=100):
     maze_map = pd.read_csv(f"Mazes/{maze_name}.csv", header=None).to_numpy()
     assert np.sum(maze_map == 1) == 1, np.sum(maze_map == 1)
     assert np.sum(maze_map == 2) == 1, np.sum(maze_map == 2)
