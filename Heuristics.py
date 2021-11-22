@@ -16,7 +16,16 @@ def tail_manhattan_heuristic(state: MazeState):
 
 def center_manhattan_heuristic(state: MazeState):
     # TODO (EX 9.2), implement heuristic, delete exception
-    raise NotImplemented
+    forward_cost = state.maze_problem.forward_cost
+    tail = state.tail
+    head = state.head
+    goal_tail = state.maze_problem.tail_goal
+    goal_head = state.maze_problem.head_goal
+    # center_x = |head_x - tail_x|
+    center = (np.abs(tail[0] + head[0]) / 2, np.abs(tail[1] + head[1]) / 2)
+    goal_center = (np.abs(goal_tail[0] + goal_head[0]) / 2, np.abs(goal_tail[1] + goal_head[1]) / 2)
+    manhattan = np.abs(center[0]-goal_center[0])+np.abs(center[1]-goal_center[1])
+    return manhattan*forward_cost
 
 
 class ShorterRobotHeuristic:
