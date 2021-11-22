@@ -22,8 +22,8 @@ def center_manhattan_heuristic(state: MazeState):
     goal_tail = state.maze_problem.tail_goal
     goal_head = state.maze_problem.head_goal
     # center_x = |head_x - tail_x|
-    center = (np.abs(tail[0] + head[0]) / 2, np.abs(tail[1] + head[1]) / 2)
-    goal_center = (np.abs(goal_tail[0] + goal_head[0]) / 2, np.abs(goal_tail[1] + goal_head[1]) / 2)
+    center = ((tail[0] + head[0]) / 2, (tail[1] + head[1]) / 2)
+    goal_center = ((goal_tail[0] + goal_head[0]) / 2, (goal_tail[1] + goal_head[1]) / 2)
     manhattan = np.abs(center[0]-goal_center[0])+np.abs(center[1]-goal_center[1])
     return manhattan*forward_cost
 
