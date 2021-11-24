@@ -47,8 +47,8 @@ class ShorterRobotHeuristic:
         new_maze[shorter_robot_head_goal[0],shorter_robot_head_goal[1]] = 4
         new_maze[shorter_robot_tail_goal[0],shorter_robot_tail_goal[1]] = 3
         self.new_maze_problem = MazeProblem(maze_map=new_maze,
-                                            initial_head=new_head,
-                                            initial_tail=new_tail,
+                                            initial_head=new_tail,
+                                            initial_tail=new_head,
                                             head_goal=shorter_robot_head_goal,  # doesn't matter, don't change
                                             tail_goal=shorter_robot_tail_goal)  # doesn't matter, don't change
         self.node_dists = UniformCostSearchRobot().solve(self.new_maze_problem, compute_all_dists=True)
