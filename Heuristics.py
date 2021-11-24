@@ -27,7 +27,6 @@ def center_manhattan_heuristic(state: MazeState):
     manhattan = np.abs(center[0]-goal_center[0])+np.abs(center[1]-goal_center[1])
     return manhattan*forward_cost
 
-
 class ShorterRobotHeuristic:
     def __init__(self, maze_problem: MazeProblem, k):
         assert k % 2 == 0, "odd must be even"
@@ -36,30 +35,52 @@ class ShorterRobotHeuristic:
         self.k = k
         ################################################################################################################
         # TODO (EX. 13.2): replace all three dots, delete exception
-        raise NotImplemented
-        shorter_robot_head_goal, shorter_robot_tail_goal = ...
-        self.new_maze_problem = MazeProblem(maze_map=...,
-                                            initial_head=...,
-                                            initial_tail=...,
+        new_head, new_tail = self._compute_shorter_head_and_tails(maze_problem.initial_state.head, maze_problem.initial_state.tail)
+        shorter_robot_head_goal, shorter_robot_tail_goal = self._compute_shorter_head_and_tails(maze_problem.head_goal, maze_problem.tail_goal)
+        new_maze = maze_problem.maze_map
+        new_maze[maze_problem.initial_state.head[0],maze_problem.initial_state.head[1]] = 0
+        new_maze[maze_problem.initial_state.tail[0],maze_problem.initial_state.tail[1]] = 0
+        new_maze[new_head[0],new_head[1]] = 2
+        new_maze[new_tail[0],new_tail[1]] = 1
+        new_maze[maze_problem.head_goal[0],maze_problem.head_goal[1]] = 0
+        new_maze[maze_problem.tail_goal[0],maze_problem.tail_goal[1]] = 0
+        new_maze[shorter_robot_head_goal[0],shorter_robot_head_goal[1]] = 4
+        new_maze[shorter_robot_tail_goal[0],shorter_robot_tail_goal[1]] = 3
+        self.new_maze_problem = MazeProblem(maze_map=new_maze,
+                                            initial_head=new_head,
+                                            initial_tail=new_tail,
                                             head_goal=shorter_robot_head_goal,  # doesn't matter, don't change
                                             tail_goal=shorter_robot_tail_goal)  # doesn't matter, don't change
-        self.node_dists = ...().solve(..., compute_all_dists=True)
+        self.node_dists = UniformCostSearchRobot().solve(self.new_maze_problem, compute_all_dists=True)
         ################################################################################################################
 
         assert isinstance(self.node_dists, NodesCollection)
 
     def _compute_shorter_head_and_tails(self, head, tail):
         # TODO (EX. 13.1): complete code here, delete exception
-        raise NotImplemented
+        if head[0] == tail[0]:
+            if head[1] > tail[1]:
+                new_head = head[0], head[1] - int(self.k / 2)
+                new_tail = tail[0], tail[1] + int(self.k / 2)
+            else:
+                new_head = head[0], head[1] + int(self.k / 2)
+                new_tail = tail[0], tail[1] - int(self.k / 2)
+        else:
+            if head[0] > tail[0]:
+                new_head = head[0] - int(self.k / 2), head[1]
+                new_tail = tail[0] + int(self.k / 2), tail[1]
+            else:
+                new_head = head[0] + int(self.k / 2), head[1]
+                new_tail = tail[0] - int(self.k / 2), tail[1]
+        return np.asarray(new_head), np.asarray(new_tail)
 
     def __call__(self, state: MazeState):
         # TODO (EX. 13.3): replace each three dots, delete exception
-        raise NotImplemented
-        shorter_head_location, shorter_tail_location = ...
-        new_state = MazeState(..., head=..., tail=...)
+        shorter_head_location, shorter_tail_location = self._compute_shorter_head_and_tails(state.head, state.tail)
+        new_state = MazeState(self.new_maze_problem, head=shorter_head_location, tail=shorter_tail_location)
         if new_state in self.node_dists:
             node = self.node_dists.get_node(new_state)
-            return ...
+            return node.g_value
         else:
-            return ...  # what should we return in this case, so that the heuristic would be as informative as possible
-                        # but still admissible
+            return 0  # what should we return in this case, so that the heuristic would be as informative as possible
+                      # but still admissible
