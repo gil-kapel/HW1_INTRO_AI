@@ -35,20 +35,10 @@ class ShorterRobotHeuristic:
         self.k = k
         ################################################################################################################
         # TODO (EX. 13.2): replace all three dots, delete exception
-        new_head, new_tail = self._compute_shorter_head_and_tails(maze_problem.initial_state.head, maze_problem.initial_state.tail)
         shorter_robot_head_goal, shorter_robot_tail_goal = self._compute_shorter_head_and_tails(maze_problem.head_goal, maze_problem.tail_goal)
-        new_maze = maze_problem.maze_map
-        new_maze[maze_problem.initial_state.head[0],maze_problem.initial_state.head[1]] = 0
-        new_maze[maze_problem.initial_state.tail[0],maze_problem.initial_state.tail[1]] = 0
-        new_maze[new_head[0],new_head[1]] = 2
-        new_maze[new_tail[0],new_tail[1]] = 1
-        new_maze[maze_problem.head_goal[0],maze_problem.head_goal[1]] = 0
-        new_maze[maze_problem.tail_goal[0],maze_problem.tail_goal[1]] = 0
-        new_maze[shorter_robot_head_goal[0],shorter_robot_head_goal[1]] = 4
-        new_maze[shorter_robot_tail_goal[0],shorter_robot_tail_goal[1]] = 3
-        self.new_maze_problem = MazeProblem(maze_map=new_maze,
-                                            initial_head=new_tail,
-                                            initial_tail=new_head,
+        self.new_maze_problem = MazeProblem(maze_map=maze_problem.maze_map,
+                                            initial_head=shorter_robot_tail_goal,
+                                            initial_tail=shorter_robot_head_goal,
                                             head_goal=shorter_robot_head_goal,  # doesn't matter, don't change
                                             tail_goal=shorter_robot_tail_goal)  # doesn't matter, don't change
         self.node_dists = UniformCostSearchRobot().solve(self.new_maze_problem, compute_all_dists=True)
@@ -77,10 +67,10 @@ class ShorterRobotHeuristic:
     def __call__(self, state: MazeState):
         # TODO (EX. 13.3): replace each three dots, delete exception
         shorter_head_location, shorter_tail_location = self._compute_shorter_head_and_tails(state.head, state.tail)
-        new_state = MazeState(self.new_maze_problem, head=shorter_head_location, tail=shorter_tail_location)
+        new_state = MazeState(self.new_maze_problem, head=shorter_tail_location, tail=shorter_head_location)
         if new_state in self.node_dists:
             node = self.node_dists.get_node(new_state)
             return node.g_value
         else:
-            return 0  # what should we return in this case, so that the heuristic would be as informative as possible
-                      # but still admissible
+            return center_manhattan_heuristic(state)  # what should we return in this case, so that the heuristic would be as informative as possible
+                                                          # but still admissible

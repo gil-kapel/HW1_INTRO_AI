@@ -41,7 +41,7 @@ def shorter_robot_heuristic_experiment(maze_index):
     ks = list(range(2, length - 2, 2))
     for k in ks:
         ################################################################################################################
-        sol = test_robot(WAStartRobot, heuristic=shorter_robot_heuristic_experiment(k))
+        sol = test_robot(WAStartRobot, [maze_index], heuristic=ShorterRobotHeuristic, k=k)
         sol = sol[0]
         solve_times.append(round(sol.solve_time, 2))
         heuristic_init_times.append(sol.init_heuristic_time)
